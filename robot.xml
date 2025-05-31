@@ -1,0 +1,181 @@
+<robot name="pi_robot">
+
+    <material name="Gray">
+        <color rgba="0.134 0.134 0.134 1.0" />
+    </material>
+
+	<material name="Gray2">
+        <color rgba="0.46 0.46 0.46 1.0" />
+    </material>
+
+	<material name="Gray3">
+        <color rgba="0.244 0.244 0.244 1.0" />
+    </material>
+
+	<material name="Red1">
+        <color rgba="0.255 0 0 1.0" />
+    </material>
+
+	<!-- * * * Link Definitions * * * -->
+
+    <!-- 3. the base -->
+ 	<link name="base_link">
+		<visual>
+            <!-- position. a little higher above the baseline-->
+		    <origin xyz="0 0 0.025" rpy="0 0 0"/>
+            <!-- Length Width Height-->
+			<geometry>
+                <box size="0.3 0.2 0.05"/>
+            </geometry>
+			<material name="Gray2" />
+		</visual>	
+	</link>
+
+    <!-- 2. the spinny thing's base -->
+    <link name="base2_link">
+		<visual>
+            <!-- red, green, up-->
+		    <origin xyz="0 0 0.075" rpy="0 0 0"/>
+			<geometry>
+				<cylinder radius="0.1" length="0.05"/>
+			</geometry>
+			<material name="Gray2" />
+		</visual>	
+	</link>
+
+    <!-- 3. the spinny thing -->
+    <link name="base_rotation_link">
+		<visual>
+            <!-- red, green, up-->
+		    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+			<geometry>
+				<cylinder radius="0.09" length="0.05"/>
+			</geometry>
+			<material name="Gray2" />
+		</visual>	
+	</link>
+
+    <!-- link to shoulder-->
+	<link name="shoulder_ball">
+	<visual>
+		<origin xyz="0 0 -0.25" rpy="0 0 0"/>
+		<geometry><sphere radius="0.04"/></geometry>
+		<material name="Red1" />
+	</visual>
+	</link>
+
+	<link name="shoulder_yaw_link"/>
+
+    <link name="shoulder">
+		<visual>
+			<origin xyz="0 0 0.2" rpy="0 0 0"/>
+			<geometry><box size="0.06 0.06 0.4"/></geometry>
+			<material name="Gray"/>
+		</visual>
+	</link>
+
+	<link name="elbow_ball">
+		<visual>
+		    <origin xyz="0 0 0.425" rpy="0 0 0"/>
+            <!-- Length Width Height-->
+			<geometry>
+                <sphere radius="0.03"/>
+            </geometry>
+			<material name="Red1" />
+		</visual>
+	</link>
+
+    <link name="forearm">
+		<visual>
+		    <origin xyz="0 0 0.225" rpy="0 0 0"/>
+            <!-- Length Width Height-->
+			<geometry>
+                <box size="0.06 0.06 0.4"/>
+            </geometry>
+			<material name="Gray" />
+		</visual>
+	</link>
+
+
+	<link name="wrist_ball">
+		<visual>
+		    <origin xyz="0 0 0.475" rpy="0 0 0"/>
+            <!-- Length Width Height-->
+			<geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+			<material name="Red1" />
+		</visual>
+	</link>
+
+	<link name="palm">
+		<visual>
+		    <origin xyz="0 0 0.175" rpy="0 0 0"/>
+            <!-- Length Width Height-->
+			<geometry>
+                <box size="0.05 0.2 0.3"/>
+            </geometry>
+
+			<material name="White">
+				<color rgba="0.255 0.255 0.255 1.0" />
+			</material>
+		</visual>	
+	</link>
+
+	<!-- * * * Joint Definitions * * * -->
+
+    <joint name="base_to_ball" type="fixed">
+    	<parent link="base_rotation_link"/>
+    	<child link="shoulder_ball"/>
+		<origin xyz="0 0 0.4" rpy="0 0 0"/>
+	</joint>
+
+	<joint name="s_axis" type="revolute">
+		<parent link="shoulder_ball"/>
+		<child link="shoulder_yaw_link"/>
+		<origin xyz="0 0 -0.25" rpy="0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit lower="-3.14" upper="3.14" effort="10" velocity="3"/>
+	</joint>
+
+    <joint name="l_axis" type="revolute">
+		<parent link="shoulder_yaw_link"/>
+		<child  link="shoulder"/>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<axis xyz="1 0 0"/>
+		<limit lower="-0.5" upper="0.5" effort="10" velocity="3"/>
+	</joint>
+
+    <joint name="r_axis" type="revolute">
+    	<parent link="shoulder"/>
+    	<child link="elbow_ball"/>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+       	<limit lower="-1.57" upper="1.57" effort="10" velocity="3"/>
+        <axis xyz="0 0 1"/>
+	</joint>
+
+	<joint name="u_axis" type="revolute">
+    	<parent link="elbow_ball"/>
+    	<child link="forearm"/>
+		    <origin xyz="0 0 0.425" rpy="0 0 0"/>
+  		<limit  lower="-0.7" upper="0.7" effort="10" velocity="3"/>
+        <axis xyz="1 0 0"/>
+	</joint>
+
+	<joint name="t_axis" type="revolute">
+    	<parent link="forearm"/>
+    	<child link="wrist_ball"/>
+		    <origin xyz="0 0 0" rpy="0 0 0"/>
+  		<limit  lower="-3.14" upper="3.14" effort="10" velocity="3"/>
+        <axis xyz="0 0 1"/>
+	</joint>
+
+	<joint name="b_axis" type="revolute">
+    	<parent link="wrist_ball"/>
+    	<child link="palm"/>
+		    <origin xyz="0 0 0.475" rpy="0 0 0"/>
+  		<limit  lower="-2" upper="2" effort="10" velocity="3"/>
+        <axis xyz="0 1 0"/>
+	</joint>
+
+</robot>
